@@ -30,9 +30,7 @@ export function TaskDetailModal() {
   if (!selectedItemId || !selectedItemType) return null;
 
   const parentNotes = getNotesForParent(selectedItemId);
-
-  // Find or create a note for the active type
-  let activeNote = parentNotes.find((n) => n.noteType === activeNoteType);
+  const activeNote = parentNotes.find((n) => n.noteType === activeNoteType);
 
   const handleEnsureNote = useCallback(() => {
     if (!activeNote) {

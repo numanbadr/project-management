@@ -20,7 +20,6 @@ export function TaskNoteCanvas({ noteId, onEnsureNote }: TaskNoteCanvasProps) {
 
   const note = noteId ? notes[noteId] : null;
 
-  // Parse initial data for Excalidraw
   const initialElements = note
     ? JSON.parse(note.excalidrawElements)
     : [];
@@ -33,18 +32,15 @@ export function TaskNoteCanvas({ noteId, onEnsureNote }: TaskNoteCanvasProps) {
 
   const handleChange = useCallback(
     (elements: readonly any[], appState: any, files: any) => {
-      // Debounce saves
       if (debounceRef.current) clearTimeout(debounceRef.current);
 
       debounceRef.current = setTimeout(() => {
-        // Ensure note exists
         let id = currentNoteIdRef.current;
         if (!id) {
           id = onEnsureNote();
           currentNoteIdRef.current = id;
         }
 
-        // Only save if there are meaningful elements
         const hasContent = elements.some((el: any) => !el.isDeleted);
         if (hasContent || elements.length === 0) {
           updateNote(id, {

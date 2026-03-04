@@ -1,5 +1,5 @@
 import { parseISO, differenceInDays, isBefore, isAfter } from 'date-fns';
-import type { BarSegment, GanttRow, Project, Task, Subtask } from '@/types'; c0aab4c (feat: implement project management frontend with Gantt chart, timeline view, and Excalidraw notes)
+import type { BarSegment, GanttRow, Project, Task, Subtask } from '@/types';
 
 export function computeBarSegments(
   scheduledStart: string,
