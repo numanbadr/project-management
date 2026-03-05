@@ -37,7 +37,6 @@ export function GanttChart() {
   const timelineBodyRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const scrollingSourceRef = useRef<string | null>(null);
-  const hasScrolledToToday = useRef(false);
 
   // Modal state
   const [showAddProject, setShowAddProject] = useState(false);
@@ -108,7 +107,6 @@ export function GanttChart() {
     const el = timelineBodyRef.current;
     if (!el) return;
 
-    // Position today at ~1/3 from left
     const containerWidth = el.clientWidth;
     const scrollTo = todayX - containerWidth / 3;
     el.scrollLeft = Math.max(0, scrollTo);
@@ -116,8 +114,6 @@ export function GanttChart() {
     if (headerRef.current) {
       headerRef.current.scrollLeft = el.scrollLeft;
     }
-
-    hasScrolledToToday.current = true;
   }, [todayX, ganttViewMode]);
 
   // Delete handler
@@ -170,7 +166,6 @@ export function GanttChart() {
           className="flex flex-col border-r border-slate-200 bg-white flex-shrink-0"
           style={{ width: sidebarWidth }}
         >
-          {/* Sidebar header is inside GanttSidebar as first element */}
           <div
             ref={sidebarBodyRef}
             className="flex-1 overflow-y-auto overflow-x-hidden"

@@ -53,7 +53,6 @@ export function TimelineView() {
 
   const currentDate = parseISO(timelineDate);
 
-  // Get date range based on view mode
   const dateRange = useMemo(() => {
     if (timelineViewMode === 'day') {
       return { start: startOfDay(currentDate), end: startOfDay(currentDate) };
@@ -68,7 +67,6 @@ export function TimelineView() {
     [dateRange]
   );
 
-  // Collect all timeline items for the date range
   const itemsByDay = useMemo(() => {
     const map = new Map<string, TimelineItem[]>();
 
@@ -76,12 +74,10 @@ export function TimelineView() {
       map.set(format(day, 'yyyy-MM-dd'), []);
     }
 
-    // Add tasks
     for (const task of Object.values(tasks)) {
       const project = projects[task.projectId];
       if (!project) continue;
 
-      // Check if task overlaps with any day in range
       for (const day of daysInRange) {
         const dayKey = format(day, 'yyyy-MM-dd');
         const taskStart = parseISO(task.scheduledStart);
@@ -94,7 +90,6 @@ export function TimelineView() {
           })
         ) {
           const items = map.get(dayKey)!;
-          // Only add if not already present
           if (!items.some((it) => it.id === task.id)) {
             items.push({
               id: task.id,
@@ -112,11 +107,10 @@ export function TimelineView() {
         }
       }
 
-      // Add subtasks
       for (const subtask of Object.values(subtasks)) {
         if (subtask.taskId !== task.id) continue;
-        const project = projects[subtask.projectId];
-        if (!project) continue;
+        const proj = projects[subtask.projectId];
+        if (!proj) continue;
 
         for (const day of daysInRange) {
           const dayKey = format(day, 'yyyy-MM-dd');
@@ -135,8 +129,8 @@ export function TimelineView() {
                 id: subtask.id,
                 name: subtask.name,
                 type: 'subtask',
-                projectName: project.name,
-                projectColor: project.color,
+                projectName: proj.name,
+                projectColor: proj.color,
                 priority: subtask.priority,
                 scheduledStart: subtask.scheduledStart,
                 scheduledEnd: subtask.scheduledEnd,
@@ -150,7 +144,6 @@ export function TimelineView() {
       }
     }
 
-    // Sort each day by priority
     for (const [, items] of map) {
       items.sort(
         (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
@@ -185,7 +178,6 @@ export function TimelineView() {
       {/* Controls */}
       <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-2">
         <div className="flex items-center gap-3">
-          {/* View mode toggle */}
           <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-0.5">
             <button
               onClick={() => setTimelineViewMode('day')}
@@ -209,7 +201,6 @@ export function TimelineView() {
             </button>
           </div>
 
-          {/* Navigation */}
           <button
             onClick={navigateBack}
             className="rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100"
@@ -236,7 +227,6 @@ export function TimelineView() {
           </span>
         </div>
 
-        {/* Priority legend */}
         <div className="flex items-center gap-3 text-[10px] text-slate-500">
           {Object.entries(PRIORITY_CONFIG).map(([key, cfg]) => (
             <span key={key} className="flex items-center gap-1">
@@ -259,7 +249,6 @@ export function TimelineView() {
 
           return (
             <div key={dayKey} className="mb-4">
-              {/* Day header */}
               <div className="mb-2 flex items-center gap-2">
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
@@ -279,7 +268,6 @@ export function TimelineView() {
                 </div>
               </div>
 
-              {/* Items */}
               {items.length === 0 ? (
                 <p className="ml-10 rounded-lg border border-dashed border-slate-200 bg-white py-6 text-center text-xs text-slate-400">
                   No tasks scheduled
@@ -290,9 +278,7 @@ export function TimelineView() {
                     <TimelineTaskCard
                       key={item.id}
                       item={item}
-                      onClick={() =>
-                        openTaskDetail(item.id, item.type)
-                      }
+                      onClick={() => openTaskDetail(item.id, item.type)}
                     />
                   ))}
                 </div>

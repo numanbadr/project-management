@@ -48,6 +48,8 @@ export function GanttBar({ row, rowIndex, timelineStart, viewMode, onClick }: Ga
     row.actualEnd
   );
 
+  if (segments.length === 0) return null;
+
   const y = rowIndex * ROW_HEIGHT + BAR_PADDING;
 
   return (
@@ -63,9 +65,6 @@ export function GanttBar({ row, rowIndex, timelineStart, viewMode, onClick }: Ga
         const xEnd = dateToX(seg.endDate, timelineStart, viewMode);
         const width = Math.max(xEnd - x, 2);
 
-        const isFirst = i === 0;
-        const isLast = i === segments.length - 1;
-
         return (
           <rect
             key={`${row.id}-seg-${i}`}
@@ -76,8 +75,8 @@ export function GanttBar({ row, rowIndex, timelineStart, viewMode, onClick }: Ga
             fill={getFill(seg.type, row.projectColor)}
             stroke={getStroke(seg.type, row.projectColor)}
             strokeWidth={1}
-            rx={isFirst || isLast ? 4 : 0}
-            ry={isFirst || isLast ? 4 : 0}
+            rx={4}
+            ry={4}
           />
         );
       })}
